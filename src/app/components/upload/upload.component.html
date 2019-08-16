@@ -1,0 +1,33 @@
+<div class="row mt-5">
+    <div class="col">
+
+        <h3>Multipart File Upload</h3>
+        <hr>
+
+        <form novalidate [formGroup]="frm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="customFile" multiple="true"
+                        (change)="onFileSelect($event)" formControlName="file"
+                        [ngClass]="{ 'is-invalid' : (f.file.touched || f.file.dirty) && !f.file.valid }">
+                    <div class="invalid-feedback">
+                        <span *ngIf="f.file.errors?.required">This field is required</span>
+                    </div>
+                    <label class="custom-file-label" for="customFile">
+                        {{ (fileNames) ? fileNames : 'Choose file' }}
+                    </label>
+                </div>
+            </div>
+
+            <div class="mt-2">
+                <button type="submit" class="btn btn-primary mr-2" [disabled]="!frm.valid">Submit</button>
+                <button type="reset" class="btn btn-secondary">Reset</button>
+            </div>
+        </form>
+
+        <div class="bg-secondary rounded p-3 mt-4">
+            <pre><code>{{ frm.value | json }}</code></pre>
+        </div>
+
+    </div>
+</div>
