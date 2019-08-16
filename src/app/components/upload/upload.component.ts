@@ -9,9 +9,13 @@ import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/fo
 export class UploadComponent implements OnInit {
 
     frm: FormGroup;
+
     files: any[] = [];
     fileNames: string = '';
-    allowedExtensions: any[] = ['.jpeg', '.jpg', '.png', '.gif', '.bmp'];
+    extensions: any[] = ['jpeg', 'jpg', 'png', 'gif', 'bmp'];
+    minSize: number = 1;
+    maxSize: number = 2;
+    errors: any = null;
 
     constructor(
         private builder: FormBuilder
@@ -44,10 +48,18 @@ export class UploadComponent implements OnInit {
         //   );
     }
 
+    onResetClick($event: any) {
+        this.frm.reset();
+        this.fileNames = '';
+        this.files = [];
+        this.errors = null;
+    }
+
     onFileSelect($event: any) {
 
         this.fileNames = '';
         this.files = [];
+        this.errors = null;
 
         for (const key in $event.target.files) {
             const file = $event.target.files[key];
@@ -59,7 +71,32 @@ export class UploadComponent implements OnInit {
 
         if (this.fileNames) {
             this.fileNames = this.fileNames.substr(0, this.fileNames.length - 2);
-        }        
+        }
+
+        if (this.files.length) {
+            this.files.forEach(file => {
+                let extension = file.name.split('.'); extension = extension[1];
+                if (!this.extensions.find(i => i === extension)) {
+                    if (!this.errors) {
+                        this.errors = {};
+                    }
+                    this.errors.invalidExtension = true;
+                    return;
+                }
+            });
+            this.files.forEach(file => {
+                let size = file.size / 1024 / 1024;
+                if (!(this.minSize <= size && size <= this.maxSize)) {
+                    if (!this.errors) {
+                        this.errors = {};
+                    }
+                    this.errors.invalidSize = true;
+                    return;
+                }
+            });
+        }
+        
+        console.log('🏈', this.files);
     }
 
 }

@@ -24,7 +24,7 @@
               "src/assets"
             ],
             "styles": [
-              "./node_modules/bootswatch/dist/cerulean/bootstrap.min.css",
+              "./node_modules/bootswatch/dist/lumen/bootstrap.min.css",
               "src/styles.css"
             ],
             "scripts": [

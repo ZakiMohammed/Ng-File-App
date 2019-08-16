@@ -9,9 +9,12 @@
                 <div class="custom-file">
                     <input type="file" class="custom-file-input" id="customFile" multiple="true"
                         (change)="onFileSelect($event)" formControlName="file"
-                        [ngClass]="{ 'is-invalid' : (f.file.touched || f.file.dirty) && !f.file.valid }">
+                        accept="image/*"
+                        [ngClass]="{ 'is-invalid' : ((f.file.touched || f.file.dirty) && !f.file.valid) || errors }">
                     <div class="invalid-feedback">
-                        <span *ngIf="f.file.errors?.required">This field is required</span>
+                        <div *ngIf="f.file.errors?.required">This field is required</div>
+                        <div *ngIf="errors?.invalidExtension">Invalid extension</div>
+                        <div *ngIf="errors?.invalidSize">Invalid size</div>
                     </div>
                     <label class="custom-file-label" for="customFile">
                         {{ (fileNames) ? fileNames : 'Choose file' }}
@@ -21,7 +24,7 @@
 
             <div class="mt-2">
                 <button type="submit" class="btn btn-primary mr-2" [disabled]="!frm.valid">Submit</button>
-                <button type="reset" class="btn btn-secondary">Reset</button>
+                <button type="button" class="btn btn-secondary" (click)="onResetClick($event)">Reset</button>
             </div>
         </form>
 
