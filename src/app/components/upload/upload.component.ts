@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { FileHandler } from 'src/app/helper/file-handler';
 
 @Component({
     selector: 'app-upload',
@@ -10,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
 export class UploadComponent implements OnInit {
 
     frm: FormGroup;
+    fileHandler: FileHandler;
 
     files: any[] = [];
     fileNames: string = '';
@@ -21,7 +23,9 @@ export class UploadComponent implements OnInit {
     constructor(
         private builder: FormBuilder,
         private httpClient:HttpClient
-    ) { }
+    ) { 
+        this.fileHandler = new FileHandler();
+    }
 
     get f(): { [key: string]: AbstractControl } {
         return this.frm.controls;
@@ -43,6 +47,8 @@ export class UploadComponent implements OnInit {
         this.files.forEach((file: any, index: number) => {
             formData.append('Upload ' + (index + 1), file);
         });
+        
+        console.log(formData);
         
         this.httpClient.post('https://localhost:44365/api/file/UploadFile', formData).subscribe(res => console.log('File Uploaded ...'));
     }

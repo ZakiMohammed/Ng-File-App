@@ -8,7 +8,7 @@
             <div class="form-group">
                 <div class="custom-file">
                     <input type="file" class="custom-file-input" id="customFile" multiple="true"
-                        (change)="fileHandler.getFiles($event.target)" formControlName="file"
+                        (change)="onFileSelect($event)" formControlName="file"
                         accept="image/*"
                         [ngClass]="{ 'is-invalid' : ((f.file.touched || f.file.dirty) && !f.file.valid) || errors }">
                     <div class="invalid-feedback">

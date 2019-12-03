@@ -6,33 +6,68 @@
 
         <div class="form-group">
             <div class="custom-file">
-                <input 
-                    type="file" 
-                    class="custom-file-input" 
-                    id="customFile" 
-                    multiple="true"
-                    (change)="onFileSelect($event)"
-                    accept="image/*">
+                <input type="file" class="custom-file-input" id="customFile" multiple="true"
+                    (change)="onFileSelect($event)" accept="image/*">
+                <!-- accept="image/*" -->
                 <label class="custom-file-label" for="customFile">
                     Choose file
                 </label>
             </div>
         </div>
 
-        <div class="card mb-2" *ngFor="let fileCard of fileCards; let i = index;">            
+        <!-- <div class="alert alert-light d-none" role="alert">
+            <button class="btn btn-sm btn-dark float-right" type="button" (click)="onCancelSubscription($event)">
+                Cancel Request
+            </button>
+            {{message}}            
+        </div> -->
+
+        <div *ngIf="!fileCards.length">
+            No file uploaded yet
+        </div>
+
+        <div class="card mb-2" *ngFor="let fileCard of fileCards; let i = index;">
             <div class="card-body">
-                <span class="btn btn-info btn-sm float-right" *ngIf="fileCard.loading">
-                    <i class="fas fa-sync fa-spin"></i>
-                </span>
-                <ng-container *ngIf="!fileCard.loading">
-                    <button type="button" class="btn btn-danger btn-sm float-right" (click)="onDeleteClick($event, i)">
+
+                <!-- loader -->
+                <ng-container *ngIf="fileCard.loading">
+                    <span class="btn btn-info float-right">
+                        <i class="fas fa-spinner fa-spin"></i>
+                    </span>
+                </ng-container>
+
+                <!-- retry -->
+                <ng-container *ngIf="fileCard.retry">
+                    <button type="button" class="btn btn-warning float-right" (click)="onRetryClick($event, i)">
+                        <i class="fas fa-sync-alt"></i> Retry
+                    </button>
+                </ng-container>
+
+                <!-- buttons -->
+                <ng-container *ngIf="!fileCard.loading && !fileCard.retry">
+                    <button type="button" class="btn btn-danger float-right" (click)="onDeleteClick($event, i)">
                         <i class="fas fa-trash-alt"></i>
                     </button>
-                    <a class="btn btn-success btn-sm mr-1 float-right" [href]="fileCard.link" download="fileCard.name">
+                    <button type="button" class="btn btn-success mr-1 float-right" (click)="onDownloadClick($event, i)">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <a class="btn btn-success mr-1 mt-5 float-right d-none" [href]="fileCard.link" download
+                        target="_blank">
                         <i class="fas fa-download"></i>
                     </a>
                 </ng-container>
-                <p class="card-text">{{fileCard.name}}</p>                
+
+                <!-- file detail -->
+                <img [src]="isImage(fileCard.link) ? fileCard.link : defaultImageUrl" [alt]="fileCard.name"
+                    class="img-fluid float-left mr-2" style="height: 50px; width: 50px;">
+                <p class="card-text">{{fileCard.name}}</p>
+
+                <!-- progress -->
+                <div class="progress" *ngIf="fileCard.link === defaultImageUrl">
+                    <div class="progress-bar" role="progressbar" [style.width.%]="progress">
+                        Uploading {{progress}}%
+                    </div>
+                </div>
             </div>
         </div>
 
