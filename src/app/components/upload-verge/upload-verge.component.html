@@ -7,7 +7,7 @@
         <div class="form-group">
             <div class="custom-file">
                 <input type="file" class="custom-file-input" id="customFile" multiple="true"
-                    (change)="onFileSelect($event)" accept="image/*">
+                    (change)="onFileSelect($event)">
                 <!-- accept="image/*" -->
                 <label class="custom-file-label" for="customFile">
                     Choose file
@@ -15,16 +15,24 @@
             </div>
         </div>
 
-        <!-- <div class="alert alert-light d-none" role="alert">
-            <button class="btn btn-sm btn-dark float-right" type="button" (click)="onCancelSubscription($event)">
-                Cancel Request
-            </button>
-            {{message}}            
-        </div> -->
-
         <div *ngIf="!fileCards.length">
-            No file uploaded yet
+            <b>No file uploaded yet</b>
         </div>
+
+        <div *ngIf="fileCards.length" class="mb-3">
+            <b>Uploaded files</b>
+            <div class="float-right">
+                <button type="button" class="btn btn-sm btn-primary mr-1" (click)="onDownloadAll($event)">
+                    <i class="fas fa-download"></i> 
+                    Download All
+                </button>
+                <button type="button" class="btn btn-sm btn-danger" (click)="onDeleteAll($event)">
+                    <i class="fas fa-trash-alt"></i> 
+                    Delete All
+                </button>
+            </div>
+            <div class="clearfix"></div>
+        </div>        
 
         <div class="card mb-2" *ngFor="let fileCard of fileCards; let i = index;">
             <div class="card-body">
@@ -36,9 +44,16 @@
                     </span>
                 </ng-container>
 
+                <!-- cancel -->
+                <ng-container *ngIf="fileCard.cancel">
+                    <button type="button" class="btn btn-light float-right" (click)="onCancelClick($event, i)">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </ng-container>
+
                 <!-- retry -->
                 <ng-container *ngIf="fileCard.retry">
-                    <button type="button" class="btn btn-warning float-right" (click)="onRetryClick($event, i)">
+                    <button type="button" class="btn btn-warning float-right" (click)="onRetryClick($event, fileCard)">
                         <i class="fas fa-sync-alt"></i> Retry
                     </button>
                 </ng-container>
@@ -48,10 +63,10 @@
                     <button type="button" class="btn btn-danger float-right" (click)="onDeleteClick($event, i)">
                         <i class="fas fa-trash-alt"></i>
                     </button>
-                    <button type="button" class="btn btn-success mr-1 float-right" (click)="onDownloadClick($event, i)">
+                    <button type="button" class="btn btn-primary mr-1 float-right" (click)="onDownloadClick($event, i)">
                         <i class="fas fa-download"></i>
                     </button>
-                    <a class="btn btn-success mr-1 mt-5 float-right d-none" [href]="fileCard.link" download
+                    <a class="btn btn-primary mr-1 mt-5 float-right d-none" [href]="fileCard.link" download
                         target="_blank">
                         <i class="fas fa-download"></i>
                     </a>
@@ -64,12 +79,54 @@
 
                 <!-- progress -->
                 <div class="progress" *ngIf="fileCard.link === defaultImageUrl">
-                    <div class="progress-bar" role="progressbar" [style.width.%]="progress">
-                        Uploading {{progress}}%
+                    <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" role="progressbar" [style.width.%]="fileCard.progress">
+                        Uploading {{fileCard.progress}}%
                     </div>
                 </div>
+
             </div>
         </div>
 
+    </div>
+</div>
+
+<!-- delete modal -->
+<div class="modal fade" id="mdlDelete" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Message</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-danger" (click)="onModalDeleteClick($event)">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- delete all modal -->
+<div class="modal fade" id="mdlDeleteAll" tabindex="-1" role="dialog" aria-labelledby="modelTitleId" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Message</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete all?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button type="button" class="btn btn-danger" (click)="onModalDeleteAllClick($event)">Yes</button>
+            </div>
+        </div>
     </div>
 </div>
